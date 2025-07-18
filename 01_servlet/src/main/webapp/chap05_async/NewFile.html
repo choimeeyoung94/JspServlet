@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+  
+  // 본문을 다 읽은 뒤에 처리하는 이벤트 : load
+  
+  onload = function(e) {
+    const divJson = document.getElementById('div-json');
+    const btnJson = document.getElementById('btn-json');
+    btnJson.addEventListener('click', (e) => {
+      fetch("/01_servlet/JsonResponse", {
+        method: "get",
+        
+      }).then(response => response.json())
+        .then(json => {
+          const actorsList = json.actors.map(actor => `<li>${actor}</li>`).join("");
+          divJson.innerHTML = 
+          `<ul>
+            <li>제목: ${json.title}</li>
+            <li>평점: ${json.stars}</li>
+            <li>감독: ${json.info.director}</li>
+            <li>장르: ${json.info.genre}</li>
+            <li>출연진: ${actorsList}</li>
+            
+          </ul>`;
+   
+        })
+    })
+    
+    const btnXml  = document.getElementById('btn-xml');
+    btnXml.addEventListener('click', (e) => {
+      fetch("/01_servlet/XmlResponse")
+        .then(response => response.text())
+        .then(xml => {
+          // 문자열로 반환된 xml 데이터를 xml Document로 수정
+          const xmlDoc = new DOMParser().parseFromString(xml, "application/xml");
+          console.log(xmlDoc);
+          const weather = xmlDoc.getElementsByTagName("weather")[0];
+          let tbody = `<tr> <td colspan="3">
+                          ${weather.getAttribute('year')}
+                          ${weather.getAttribute('month')}
+                          ${weather.getAttribute('day')}
+                          ${weather.getAttribute('hour')}
+       
+                    </td>`;
+          const locals = xmlDoc.getElementsByTagName("local");        
+          for (let i = 0; i < locals.length; i++) {
+            tbody += "<tr>";
+            tbody += `<td>${locals[i].textContent}</td>`;
+            tbody += `<td>${locals[i].getAttribute('ta')}</td>`;
+            tbody += `<td>${locals[i].getAttribute('desc')}</td>`;
+            tbody += "</tr>";
+          }
+          document.getElementById("weather").innerHTML = tbody;
+        })
+      
+      
+    })
+    
+  }
+  
+  
+  
+</script>
+
+
+
+
+
+</head>
+<body>
+  <button type="button" id="btn-json">비동기 요청(JSON)</button>
+  <div id="div-json">여기에 JSON 데이터가 나타난다</div>
+  <hr>
+  
+  <button type="button" id="btn-xml">비동기 요청(XML)</button>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>지역명</th>
+        <th>온도</th>
+        <th>날씨</th>
+      </tr>
+    </thead>
+    <tbody id="weather">
+      
+      
+    </tbody>
+    
+    
+  </table>
+</body>
+</html>
