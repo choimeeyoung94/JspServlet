@@ -14,7 +14,7 @@
     1. 웹 애플리케이션 개발을 쉽게 할 수 있도록 미리 생성해서 제공하는 객체이다
     2. JSP에서는 별도의 선언 없이 곧바로 내장 객체를 사용할 수 있다
     3. 내장 객체
-          Name          Type                                     Data Scope
+          Name          Type                                     Data Scope (저장소)
        1) request       javax.servlet.http.HttpServlet           requestScope
        2) response      javax.servlet.http.HttpServletResponse   
        3) session       javax.servlet.HttpSession                sessionScope
