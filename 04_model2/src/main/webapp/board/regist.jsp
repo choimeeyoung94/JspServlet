@@ -1,9 +1,7 @@
-<%@page import="model.dto.UserDTO"%>
-<%@page import="java.util.List"%>
-<%@page import="model.dao.UserDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
@@ -13,24 +11,14 @@
 </head>
 <body>
   
-  <%
-      List<UserDTO> users = UserDAO.getInstance().getUsers();
-      request.setAttribute("users", users);
-  
-  %>
-  
-  
- <h1>신규 게시글 등록 화면</h1>
- 
- <form action="${contextPath}/board/regist.jsp"
+  <h1>게시글 등록</h1>
+   <form action="${contextPath}/board/regist.do"
        method="post">
     <label for="uid">작성자</label>
     <select name="uid" id="uid">
-      <c:forEach var="user" items="${users}">
-        <option value="${user.uid}">${user.nickname}</option>
-      </c:forEach>
-      
-      
+     <option>1</option>
+     <option>2</option>
+     <option>3</option>
     </select>
     <br>
     
@@ -49,6 +37,7 @@
       location.href="${contextPath}/board/list.jsp"
     }
   </script>
+  
   
   
   

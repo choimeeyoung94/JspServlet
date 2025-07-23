@@ -1,6 +1,7 @@
-package model.dao;
+package dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -18,18 +19,48 @@ import model.dto.UserDTO;
  * 3. 인터페이스를 통해 DAO 객체를 생성하면 구현체를 자유롭게 변경할 수 있다
  * 
  * */
-public class BoardDAO {
-  private static BoardDAO dao = new BoardDAO();
+public class BoardDaoImpl implements BoardDao {
+  private static BoardDaoImpl dao = new BoardDaoImpl();
   // Singleton Pattern으로 객체 생성하기 (애플리케이션 전체에서 객체를 하나만 제공)
   // 1. private 생성자 (외부에서는 BoardDAO 객체 생성 금지)
   // 2. 내부에서 BoardDAO 객체 생성
   // 3. 생성한 BoardDAO 객체 반환
-  private BoardDAO() {
+  private BoardDaoImpl() {
     
   }
   
-  public static BoardDAO getInstance() {
+  public static BoardDaoImpl getInstance() {
     return dao;
+  }
+  
+ 
+
+  // 자원해제
+  @Override
+  public void close() {
+    // TODO Auto-generated method stub
+    
+  } 
+  
+  // 수정 (수정된 행의 개수 반환)
+  @Override
+  public int updateBoard(BoardDTO board) {
+    int count = 0;
+    try {
+      con = getConnection();
+      sql = "UPDATE tbl_board SET title = ?, content = ?, modifed_at = CURRENT_TIMESTAMP WHERE bid = ?";
+      ps = con.prepareStatement(sql);
+      ps.setString(1, board.getTitle());
+      ps.setString(2, board.getContent());
+      ps.setInt(3, board.getBid());
+      count = ps.executeUpdate();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      close();
+    }
+    return 0;
   }
   
   // 모든 메소드가 공통으로 사용할 필드
@@ -38,11 +69,32 @@ public class BoardDAO {
   private ResultSet rs;
   private String sql;
   
+  public  Connection getConnection() {
+    Connection con = null;
+    
+    try {
+      Class.forName("com.mysql.cj.jdbc.Driver");
+      con = DriverManager.getConnection(
+          "jdbc:mysql://localhost:3306/db_jdbc?characterEncoding=UTF-8&serverTimezone=UTC",
+          "goodee", 
+          "goodee");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return con;
+  }
+  
+ public void close(Connection con, PreparedStatement ps, ResultSet rs) {
+    
+    
+  }
+  
+  
   // 조회 (목록)
   public List<BoardDTO> getBoards() {
     List<BoardDTO> boards = new ArrayList<BoardDTO>();
     try {
-      con = DBUtils.getConnection();
+      con = getConnection();
       StringBuilder sb = new StringBuilder();
       sb.append("SELECT b.bid, u.uid, u.nickname, b.title, b.content, b.created_at, b.modified_at");
       sb.append("  FROM tbl_board b INNER JOIN tbl_user u");
@@ -79,7 +131,7 @@ public class BoardDAO {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      DBUtils.close(con, ps, rs);
+      close(con, ps, rs);
     }
     
     
@@ -91,7 +143,7 @@ public class BoardDAO {
   public BoardDTO getBoardBy(int bid) {
     BoardDTO board = null;
    try {
-     con = DBUtils.getConnection();
+     con = getConnection();
      StringBuilder sb = new StringBuilder();
      sb.append("SELECT b.bid, u.uid, u.nickname, b.title, b.content, b.created_at, b.modified_at");
      sb.append("  FROM tbl_board b INNER JOIN tbl_user u");
@@ -118,7 +170,7 @@ public class BoardDAO {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      DBUtils.close(con, ps, rs);
+      close();
     } 
     
     
@@ -129,7 +181,7 @@ public class BoardDAO {
   public int insertBoard(BoardDTO board) {
     int count = 0;
     try {
-      con = DBUtils.getConnection();
+      con = getConnection();
       sql = "INSERT INTO tbl_board(uid, title, content) VALUES (?, ?, ?)";
       ps = con.prepareStatement(sql);
       ps.setInt(1, board.getUser().getUid());
@@ -140,7 +192,7 @@ public class BoardDAO {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      DBUtils.close(con, ps, rs);
+      close();
     }
     
     
@@ -152,7 +204,7 @@ public class BoardDAO {
   public int deleteBoard(int bid) {
     int count = 0;
     try {
-      con = DBUtils.getConnection();
+      con = getConnection();
       sql = "DELETE FROM tbl_board WHERE bid = ?";
       ps = con.prepareStatement(sql);
       ps.setInt(1, bid);
@@ -160,18 +212,17 @@ public class BoardDAO {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      DBUtils.close(con, ps, rs);
+      close();
     }
     return count;
   }
+
+
+
+
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
 }
