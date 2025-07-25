@@ -12,7 +12,7 @@
 <body>
   
   <h1>게시글 수정</h1>
-  <form action="${contextPath}/board/modify.do"
+  <form action="${contextPath}/board/modify"
        method="post">
   
     <input type="hidden" name="bid" value="${board.bid}"/>
@@ -31,7 +31,7 @@
  </form>
   <script type="text/javascript">
     function list() {
-      location.href="${contextPath}/board/list.do"
+      location.href="${contextPath}/board/list"
     }
   </script>
   

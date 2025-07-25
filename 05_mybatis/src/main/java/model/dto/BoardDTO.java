@@ -7,21 +7,23 @@ public class BoardDTO {
   private UserDTO user;
   private String title;
   private String content;
-  private Timestamp created_at;
-  private Timestamp modified_at;
+  private Timestamp createdAt;
+  private Timestamp modifiedAt;
   
   public BoardDTO() {
     
   }
-
-  public BoardDTO(int bid, UserDTO user, String title, String content) {
+  
+  public BoardDTO(int bid, UserDTO user, String title, String content, Timestamp createdAt, Timestamp modifiedAt) {
     super();
     this.bid = bid;
     this.user = user;
     this.title = title;
     this.content = content;
+    this.createdAt = createdAt;
+    this.modifiedAt = modifiedAt;
   }
-
+  
   public int getBid() {
     return bid;
   }
@@ -54,8 +56,32 @@ public class BoardDTO {
     this.content = content;
   }
 
+  public Timestamp getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Timestamp createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Timestamp getModifiedAt() {
+    return modifiedAt;
+  }
+
+  public void setModifiedAt(Timestamp modifiedAt) {
+    this.modifiedAt = modifiedAt;
+  }
+
+
+
   @Override
   public String toString() {
-    return "BoardDTO [bid=" + bid + ", user=" + user + ", title=" + title + ", content=" + content + "]";
+    return "BoardDTO [bid=" + bid + ", user=" + user + ", title=" + title + ", content=" + content + ", createdAt="
+        + createdAt + ", modifiedAt=" + modifiedAt + "]";
   }
+
+  
+
+
+
 }

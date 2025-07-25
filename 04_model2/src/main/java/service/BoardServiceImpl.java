@@ -40,13 +40,11 @@ public class BoardServiceImpl implements BoardService {
     ActionForward af = null;
     switch (code) {
     case "detail":
-      af = new ActionForward( "/board/detail.jsp", false);
-      break;
     case "modify":
-      af = new ActionForward("/board/modify.jsp", false) ;
+      af = new ActionForward("/board/" + code + ".jsp", false) ;
       break;
     default:
-      af = new ActionForward("/main.do", true);
+      af = new ActionForward(request.getContextPath() + "/main.do", true);
     }
     
     // code에 따라 선택된 JSP로 forward
@@ -86,8 +84,27 @@ public class BoardServiceImpl implements BoardService {
 
   @Override
   public ActionForward modifyBoard(HttpServletRequest request) {
-    // TODO Auto-generated method stub
-    return null;
+   int bid = Integer.parseInt( request.getParameter("bid"));
+   String title =  request.getParameter("title");
+   String content =  request.getParameter("content");
+    
+    BoardDTO board = new BoardDTO();
+    board.setBid(bid);
+    board.setTitle(title);
+    board.setContent(content);
+
+    int count = boardDao.updateBoard(board);
+    System.out.println("update count: "+ count);
+    
+    // 등록 결과에 따라 이동할 경로 결정
+    String view = null;
+    if (count == 1) {
+      view = "/board/detail.do?bid=" + bid + "&code=detail";
+    } else {
+      view = "/board/modifyForm.do?bid="+bid + "&code=modify";
+    }
+   
+    return  new ActionForward(request.getContextPath() + view, true);
   }
 
   @Override

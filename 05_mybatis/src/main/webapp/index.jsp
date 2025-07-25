@@ -22,6 +22,9 @@
     </c:if>
   </div>
   
+  <hr>
+  
+  <a href="${contextPath}/board/list">게시글 목록으로 가기</a>
   
   
 </body>
